@@ -1,0 +1,37 @@
+resources:
+  jobs:
+    create_rag_arch:
+      name: create_rag_arch
+      tasks:
+        - task_key: parse_docs
+          notebook_task:
+            notebook_path: ../src/01_document_parse.ipynb
+        - task_key: load_vector_index
+          depends_on:
+            - task_key: parse_docs
+          notebook_task:
+            notebook_path: ../src/02_pgvector_load.ipynb
+        - task_key: deploy_vector_index_proxy
+          depends_on:
+            - task_key: load_vector_index
+          notebook_task:
+            notebook_path: ../src/03_pgvector_model_notebook.ipynb
+      queue:
+        enabled: true
+      parameters:
+        - name: output_catalog
+          default: tsfrt
+        - name: output_schema
+          default: gsa
+        - name: output_table
+          default: document_base
+        - name: vector_index
+          default: vector_index1
+        - name: vector_index_table
+          default: document_base
+        - name: volume_path
+          default: /Volumes/tsfrt/gsa/performance_reports
+        - name: embedding_model
+          default: databricks-gte-large-en
+        - name: foundation_model
+          default: databricks-llama-4-maverick

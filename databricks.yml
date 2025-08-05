@@ -1,0 +1,31 @@
+# This is a Databricks asset bundle definition for fedramp_mod_rag.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: fedramp_mod_rag
+  uuid: e79f792d-0a04-43af-8d57-5235c6b487e0
+
+include:
+  - resources/*.yaml
+
+targets:
+  dev:
+    # The default target uses 'mode: development' to create a development copy.
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default.
+    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-d95c01c1-d5be.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-d95c01c1-d5be.cloud.databricks.com
+      # We explicitly specify /Workspace/Users/thomas.seufert@databricks.com to make sure we only have a single copy.
+      root_path: /Workspace/Users/thomas.seufert@databricks.com/.bundle/${bundle.name}/${bundle.target}
+    permissions:
+      - user_name: thomas.seufert@databricks.com
+        level: CAN_MANAGE
+    run_as:
+      user_name: thomas.seufert@databricks.com
